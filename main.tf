@@ -58,11 +58,11 @@ resource "aws_iam_role" "lambda" {
   assume_role_policy = data.aws_iam_policy_document.assume_lambda_role.json
 }
 
-resource "null_resource" "function_binary" {
-  provisioner "local-exec" {
-    command = "GOOS=linux GOARCH=amd64 CGO_ENABLED=0 GOFLAGS=-trimpath go build -mod=readonly -ldflags='-s -w' -o ${local.binary_path} ${local.src_path}"
-  }
-}
+# resource "null_resource" "function_binary" {
+#   provisioner "local-exec" {
+#     command = "GOOS=linux GOARCH=amd64 CGO_ENABLED=0 GOFLAGS=-trimpath go build -mod=readonly -ldflags='-s -w' -o ${local.binary_path} ${local.src_path}"
+#   }
+# }
 
 data "archive_file" "function_archive" {
   depends_on = [null_resource.function_binary]
