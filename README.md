@@ -2,12 +2,8 @@
 
 This project maintains the lambda wrote in Golang to generate a JWT token based on the user.
 
-To generate the lambda zip file on the root of the project run the following commands:
+In case the archive point some error to generate the lambda zip file on the root of the project run the following commands to generate the binary manually:
 
 ```bash
-GOOS=linux GOARCH=arm64 go build -tags lambda.norpc -o bootstrap jwt.go
-```
-
-```bash
-zip jwtGenerator.zip bootstrap
+GOOS=linux GOARCH=amd64 CGO_ENABLED=0 GOFLAGS=-trimpath go build -mod=readonly -ldflags='-s -w' -o bootstrap main.go
 ```
