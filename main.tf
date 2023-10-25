@@ -65,7 +65,7 @@ resource "aws_iam_role" "lambda" {
 # }
 
 data "archive_file" "function_archive" {
-  depends_on = [null_resource.function_binary]
+  # depends_on = [null_resource.function_binary]
 
   type        = "zip"
   source_file = local.binary_path
