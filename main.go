@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -13,26 +14,31 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-type Customer struct {
-	CPF string `json:"cpf"`
-}
-
 func main() {
 	lambda.Start(handleRequest)
 }
 
-func handleRequest(ctx context.Context, customer Customer) (events.APIGatewayProxyResponse, error) {
+func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	var (
 		key []byte
 		t   *jwt.Token
 		s   string
 	)
+	var requestBody struct {
+		CPF string `json:"cpf"`
+	}
+
+	err := json.Unmarshal([]byte(request.Body), &requestBody)
+	if err != nil {
+		return events.APIGatewayProxyResponse{}, err
+	}
+
 	key = []byte(os.Getenv("JWT_SECRET_KEY"))
 	t = jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
 			"iss": "food-totem",
 			"exp": time.Now().Add(time.Hour * 24).Unix(),
-			"usr": customer.CPF,
+			"usr": requestBody.CPF,
 		})
 	s, _ = t.SignedString(key)
 
