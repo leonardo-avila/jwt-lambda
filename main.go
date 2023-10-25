@@ -2,11 +2,13 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 	"time"
 
 	"context"
 
+	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -15,16 +17,11 @@ type Customer struct {
 	CPF string `json:"cpf"`
 }
 
-type Response struct {
-	Token string `json:"Token"`
-}
-
 func main() {
 	lambda.Start(handleRequest)
-	//handleRequest(context.Background(), Customer{CPF: "12345678901"})
 }
 
-func handleRequest(ctx context.Context, customer Customer) (*Response, error) {
+func handleRequest(ctx context.Context, customer Customer) (events.APIGatewayProxyResponse, error) {
 	var (
 		key []byte
 		t   *jwt.Token
@@ -40,7 +37,14 @@ func handleRequest(ctx context.Context, customer Customer) (*Response, error) {
 	s, _ = t.SignedString(key)
 
 	validateToken(s, key)
-	return &Response{Token: s}, nil
+	response := events.APIGatewayProxyResponse{
+		StatusCode: http.StatusOK,
+		Headers: map[string]string{
+			"Content-Type": "application/json",
+		},
+		Body: "{\"Token\":\"" + s + "\"}",
+	}
+	return response, nil
 }
 
 func validateToken(signature string, key []byte) (string, error) {
