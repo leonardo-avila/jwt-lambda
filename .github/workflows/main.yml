@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - tech-challenge-phase-3
 
 jobs:
   build:
@@ -32,10 +33,14 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
       with:
-        terraform_version: 1.3.7
+        terraform_version: 1.5.7
 
     - name: Terraform Init
       run: terraform init
 
     - name: Terraform Plan
       run: terraform plan -input=false
+
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/main'
+      run: terraform apply -auto-approve
