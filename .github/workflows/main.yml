@@ -31,7 +31,7 @@ jobs:
         GOOS=linux GOARCH=amd64 CGO_ENABLED=0 GOFLAGS=-trimpath go build -mod=readonly -ldflags="-s -w -X main.jwtSecretKey=${{ secrets.JWT_SECRET_KEY }}" -o bootstrap main.go
 
     - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v1
+      uses: hashicorp/setup-terraform@v2.0.3
       with:
         terraform_version: 1.5.7
 
