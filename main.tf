@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     aws = {
-      source  = "hashicorp/aws"
+      source = "hashicorp/aws"
     }
     archive = {
       source = "hashicorp/archive"
@@ -15,9 +15,9 @@ terraform {
 }
 
 locals {
-  src_path = "main.go"
-  binary_name = "bootstrap"
-  binary_path = "./${local.binary_name}"
+  src_path     = "main.go"
+  binary_name  = "bootstrap"
+  binary_path  = "./${local.binary_name}"
   archive_path = "./${local.binary_name}.zip"
 }
 
@@ -80,43 +80,43 @@ resource "aws_api_gateway_rest_api" "jwt-api" {
 }
 
 resource "aws_api_gateway_resource" "jwt-proxy" {
-  rest_api_id = "${aws_api_gateway_rest_api.jwt-api.id}"
-  parent_id   = "${aws_api_gateway_rest_api.jwt-api.root_resource_id}"
+  rest_api_id = aws_api_gateway_rest_api.jwt-api.id
+  parent_id   = aws_api_gateway_rest_api.jwt-api.root_resource_id
   path_part   = "{proxy+}"
 }
 
 resource "aws_api_gateway_method" "jwt-proxy" {
-  rest_api_id   = "${aws_api_gateway_rest_api.jwt-api.id}"
-  resource_id   = "${aws_api_gateway_resource.jwt-proxy.id}"
+  rest_api_id   = aws_api_gateway_rest_api.jwt-api.id
+  resource_id   = aws_api_gateway_resource.jwt-proxy.id
   http_method   = "ANY"
   authorization = "NONE"
 }
 
 resource "aws_api_gateway_integration" "jwt-lambda" {
-  rest_api_id = "${aws_api_gateway_rest_api.jwt-api.id}"
-  resource_id = "${aws_api_gateway_method.jwt-proxy.resource_id}"
-  http_method = "${aws_api_gateway_method.jwt-proxy.http_method}"
+  rest_api_id = aws_api_gateway_rest_api.jwt-api.id
+  resource_id = aws_api_gateway_method.jwt-proxy.resource_id
+  http_method = aws_api_gateway_method.jwt-proxy.http_method
 
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = "${aws_lambda_function.jwt-generator.invoke_arn}"
+  uri                     = aws_lambda_function.jwt-generator.invoke_arn
 }
 
 resource "aws_api_gateway_method" "jwt_proxy_root" {
-  rest_api_id   = "${aws_api_gateway_rest_api.jwt-api.id}"
-  resource_id   = "${aws_api_gateway_rest_api.jwt-api.root_resource_id}"
+  rest_api_id   = aws_api_gateway_rest_api.jwt-api.id
+  resource_id   = aws_api_gateway_rest_api.jwt-api.root_resource_id
   http_method   = "ANY"
   authorization = "NONE"
 }
 
 resource "aws_api_gateway_integration" "jwt_lambda_root" {
-  rest_api_id = "${aws_api_gateway_rest_api.jwt-api.id}"
-  resource_id = "${aws_api_gateway_method.jwt_proxy_root.resource_id}"
-  http_method = "${aws_api_gateway_method.jwt_proxy_root.http_method}"
+  rest_api_id = aws_api_gateway_rest_api.jwt-api.id
+  resource_id = aws_api_gateway_method.jwt_proxy_root.resource_id
+  http_method = aws_api_gateway_method.jwt_proxy_root.http_method
 
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = "${aws_lambda_function.jwt-generator.invoke_arn}"
+  uri                     = aws_lambda_function.jwt-generator.invoke_arn
 }
 
 resource "aws_api_gateway_deployment" "jwt-api-deployment" {
@@ -125,14 +125,14 @@ resource "aws_api_gateway_deployment" "jwt-api-deployment" {
     aws_api_gateway_integration.jwt_lambda_root,
   ]
 
-  rest_api_id = "${aws_api_gateway_rest_api.jwt-api.id}"
+  rest_api_id = aws_api_gateway_rest_api.jwt-api.id
   stage_name  = "prod"
 }
 
 resource "aws_lambda_permission" "apigw" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.jwt-generator.function_name}"
+  function_name = aws_lambda_function.jwt-generator.function_name
   principal     = "apigateway.amazonaws.com"
 
   # The /*/* portion grants access from any method on any resource
