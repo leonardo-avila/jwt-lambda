@@ -12,6 +12,12 @@ terraform {
   }
 
   required_version = ">= 1.3.7"
+
+  backend "s3" {
+    bucket                  = "jwt-lambda-terraform"
+    key                     = "jwt-lambda-terraform"
+    region                  = "us-east-1"
+  }
 }
 
 locals {
