@@ -2,9 +2,7 @@ name: Build and Deploy
 
 on:
   push:
-    branches:
-      - main
-      - tech-challenge-phase-3
+    branches: [ '*' ]
 
 jobs:
   build:
@@ -28,7 +26,7 @@ jobs:
 
     - name: Build binary
       run: |
-        GOOS=linux GOARCH=amd64 CGO_ENABLED=0 GOFLAGS=-trimpath go build -mod=readonly -ldflags="-s -w -X main.jwtSecretKey=${{ secrets.JWT_SECRET_KEY }}" -o bootstrap main.go
+        GOOS=linux GOARCH=amd64 CGO_ENABLED=0 GOFLAGS=-trimpath go build -mod=readonly -o bootstrap main.go
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
@@ -46,3 +44,5 @@ jobs:
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main'
       run: terraform apply -auto-approve
+      env:
+        TF_VAR_jwt_secret_key: ${{ secrets.JWT_SECRET_KEY }}
