@@ -40,6 +40,8 @@ jobs:
 
     - name: Terraform Plan
       run: terraform plan -input=false
+      env:
+        TF_VAR_jwt_secret_key: ${{ secrets.JWT_SECRET_KEY }}
 
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main'

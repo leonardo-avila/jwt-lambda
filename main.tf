@@ -36,6 +36,10 @@ provider "aws" {
   }
 }
 
+variable "jwt_secret_key" {
+  type = string
+}
+
 data "aws_iam_policy_document" "assume_lambda_role" {
   statement {
     actions = ["sts:AssumeRole"]
@@ -78,6 +82,12 @@ resource "aws_lambda_function" "jwt-generator" {
   source_code_hash = data.archive_file.function_archive.output_base64sha256
 
   runtime = "go1.x"
+
+  environment {
+    variables = {
+      JWT_SECRET_KEY = var.jwt_secret_key
+    }
+  }
 }
 
 resource "aws_api_gateway_rest_api" "jwt-api" {
