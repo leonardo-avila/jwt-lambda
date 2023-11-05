@@ -1,12 +1,15 @@
-name: Build and Deploy
+name: Build
 
 on:
-  push:
-    branches: [ '*' ]
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: development
 
     steps:
     - name: Checkout code
@@ -38,11 +41,5 @@ jobs:
 
     - name: Terraform Plan
       run: terraform plan -input=false
-      env:
-        TF_VAR_jwt_secret_key: ${{ secrets.JWT_SECRET_KEY }}
-
-    - name: Terraform Apply
-      if: github.ref == 'refs/heads/main'
-      run: terraform apply -auto-approve
       env:
         TF_VAR_jwt_secret_key: ${{ secrets.JWT_SECRET_KEY }}
