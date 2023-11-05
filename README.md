@@ -1,5 +1,6 @@
 # Food Totem JWT Lambda Project
-[![Build and Deploy](https://github.com/leonardo-avila/jwt-lambda/actions/workflows/main.yml/badge.svg)](https://github.com/leonardo-avila/jwt-lambda/actions/workflows/main.yml)
+[![Build](https://github.com/leonardo-avila/jwt-lambda/actions/workflows/build.yml/badge.svg)](https://github.com/leonardo-avila/jwt-lambda/actions/workflows/build.yml)
+[![Deploy](https://github.com/leonardo-avila/jwt-lambda/actions/workflows/deploy.yml/badge.svg)](https://github.com/leonardo-avila/jwt-lambda/actions/workflows/deploy.yml)
 
 This project maintains the lambda wrote in Golang to generate a JWT token based on the user.
 
