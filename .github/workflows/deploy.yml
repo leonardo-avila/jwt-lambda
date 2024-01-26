@@ -45,3 +45,4 @@ jobs:
       run: terraform apply -auto-approve
       env:
         TF_VAR_jwt_secret_key: ${{ secrets.JWT_SECRET_KEY }}
+        TF_VAR_lab_account_id: ${{ secrets.LAB_ACCOUNT_ID }}
