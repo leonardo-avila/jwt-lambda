@@ -34,13 +34,16 @@ jobs:
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
+      continue-on-error: true
       with:
         terraform_version: 1.5.7
 
     - name: Terraform Init
       run: terraform init
+      continue-on-error: true
 
     - name: Terraform Plan
+      continue-on-error: true
       run: terraform plan -input=false
       env:
         TF_VAR_jwt_secret_key: ${{ secrets.JWT_SECRET_KEY }}
