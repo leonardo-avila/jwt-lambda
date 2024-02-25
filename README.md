@@ -18,4 +18,4 @@ terraform apply --auto-approve
 
 Besides that, the GitHub Action workflow configured in this project already has the steps to generate the binary and deploy the lambda to AWS.
 
-This project Terraform also contains the resources to generate the API Gateway and the IAM Role to allow the lambda to be executed.
+This project Terraform also contains the resources to generate the API Gateway and the IAM Role to allow the lambda to be executed, and this project is being used, after some phases of the project, to deploy the RabbitMQ used by the microservices of Food Totem. This decision was made considering that the RabbitMQ should be deployed before the microservices, to have the load balancer available to be referenced in the microservices.
